@@ -24,104 +24,232 @@ O Dockerfile é um arquivo de texto que contém as instruções necessárias par
 
 Um Dockerfile geralmente começa com uma instrução `FROM`, que especifica qual imagem de base deve ser usada para criar a imagem. Em seguida, podem ser adicionadas instruções adicionais para instalar pacotes, copiar arquivos e configurar o container.
 
-# Para adicionar o Docker Compose ao seu projeto com Java 17, PostgreSQL, MySQL e Spring Boot, você pode seguir os seguintes passos:
+# Para adicionar Docker ao seu projeto Java com JDK 17 e PostgreSQL, siga os seguintes passos:
 
-1. Instale o Docker e o Docker Compose em seu sistema.
+1. Instale o Docker em sua máquina, seguindo as instruções da documentação do Docker.
 
-2. Crie um arquivo `Dockerfile` na raiz do seu projeto com o seguinte conteúdo:
+2. Crie um arquivo chamado "Dockerfile" na raiz do seu projeto Java. Este arquivo irá conter as instruções para construir a imagem Docker do seu projeto.
 
-3. ```Docker
+3. Adicione as seguintes instruções ao seu Dockerfile:
+
+4. ```
    FROM openjdk:17-jdk
-   
-   ADD target/[nome-do-seu-projeto].jar [nome-do-seu-projeto].jar
-   
+   RUN apt-get update && apt-get install -y postgresql-client
+   ADD target/nome-do-seu-projeto.jar nome-do-seu-projeto.jar
    EXPOSE 8080
-   
-   ENTRYPOINT ["java", "-jar", "[nome-do-seu-projeto].jar"]
-   ```
-
-   
-
-4. Crie um arquivo `docker-compose.yml` na raiz do seu projeto com o seguinte conteúdo:
-
-5. ```dockerfile
-   version: '3'
-   
-   services:
-     app:
-       build: .
-       image: nome-da-sua-imagem
-       ports:
-         - "8080:8080"
-       depends_on:
-         - postgres
-         - mysql
-       environment:
-         - DATABASE_URL=jdbc:postgresql://postgres:5432/[nome-do-seu-banco]
-         - MYSQL_DATABASE_URL=jdbc:mysql://mysql:3306/[nome-do-seu-banco]
-     postgres:
-       image: postgres:12
-       environment:
-         POSTGRES_USER: usuario
-         POSTGRES_PASSWORD: senha
-         POSTGRES_DB: nome-do-banco-de-dados
-       ports:
-         - "5432:5432"
-     mysql:
-       image: mysql:8
-       environment:
-         MYSQL_USER: usuario
-         MYSQL_PASSWORD: senha
-         MYSQL_DATABASE: nome-do-banco-de-dados
-       ports:
-         - "3306:3306"
+   ENTRYPOINT ["java","-jar","nome-do-seu-projeto.jar"]
    
    ```
 
    
 
-6. Certifique-se de que as dependências do Spring Boot estejam configuradas no arquivo `pom.xml` do seu projeto:
+5. Substitua "nome-do-seu-projeto" pelo nome do arquivo JAR do seu projeto.
 
-7. ```java
-   <dependencies>
-     ...
-     <dependency>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-web</artifactId>
-     </dependency>
-     <dependency>
-       <groupId>org.postgresql</groupId>
-       <artifactId>postgresql</artifactId>
-       <scope>runtime</scope>
-     </dependency>
-     <dependency>
-       <groupId>mysql</groupId>
-       <artifactId>mysql-connector-java</artifactId>
-       <scope>runtime</scope>
-     </dependency>
-     ...
-   </dependencies>
-   
-   ```
+6. Abra o terminal e navegue até a raiz do seu projeto.
 
-   
+7. Execute o comando "docker build -t nome-da-sua-imagem ." para construir a imagem Docker do seu projeto. Substitua "nome-da-sua-imagem" pelo nome que você deseja dar à sua imagem.
 
-8. Execute o seguinte comando para construir a imagem Docker do seu projeto:
+8. Execute o comando "docker run -p 8080:8080 nome-da-sua-imagem" para iniciar o container Docker do seu projeto e expor a porta 8080 do container para a porta 8080 da máquina host.
 
-9. ```
-   docker-compose build
-   
-   ```
+9. Acesse a URL "[http://localhost:8080](http://localhost:8080/)" para verificar se o seu projeto está funcionando corretamente no container Docker.
 
-10. Execute o seguinte comando para criar e iniciar os containers:
+É importante notar que esses são apenas alguns passos gerais para adicionar Docker ao seu projeto Java com JDK 17 e PostgreSQL e que o processo pode variar de acordo com o seu projeto específico e as opções de configuração do Docker.
 
-11. ```
-    docker-compose up
-    ```
+# Para subir uma imagem Docker no Docker Hub usando o terminal, siga os seguintes passos:
 
-    
+Crie uma conta no Docker Hub se você ainda não tiver uma. É possível criar uma conta gratuita ou pagar por uma conta premium, dependendo das suas necessidades.
 
-12. Seu projeto estará disponível em `http://localhost:8080`.
+Abra o terminal e faça login na sua conta do Docker Hub usando o comando:
+
+```
+docker login
+```
+
+Para subir uma imagem Docker no Docker Hub usando o terminal, siga os seguintes passos:
+
+Crie uma conta no Docker Hub se você ainda não tiver uma. É possível criar uma conta gratuita ou pagar por uma conta premium, dependendo das suas necessidades.
+
+Abra o terminal e faça login na sua conta do Docker Hub usando o comando:
+
+```
+Copy code
+docker login
+```
+
+Será solicitado que você informe o seu nome de usuário e senha do Docker Hub.
+
+Navegue até a pasta que contém a imagem Docker que você deseja subir.
+
+Dê um nome à sua imagem usando o comando:
+
+```
+docker tag nome-da-sua-imagem nome-de-usuario/nome-da-sua-imagem:tag
+```
+
+Substitua "nome-da-sua-imagem" pelo nome da imagem local e "nome-de-usuario" pelo seu nome de usuário no Docker Hub. Você também pode adicionar uma tag à sua imagem, como "latest" ou "versão-1.0", para ajudar a identificar diferentes versões da imagem.
+
+Envie a imagem para o Docker Hub usando o comando:
+
+```
+docker push nome-de-usuario/nome-da-sua-imagem:tag
+```
+
+Isso pode levar algum tempo, dependendo do tamanho da imagem e da velocidade da sua conexão com a internet.
+
+Verifique se a imagem foi enviada corretamente acessando
+
+
+
+# Oque é docker-compose?
+
+O Docker Compose é uma ferramenta para criar e gerenciar aplicações compostas por múltiplos containers Docker. Ele permite que você defina todos os containers, volumes de dados e outros recursos necessários para a sua aplicação em um único arquivo de configuração, facilitando o gerenciamento e o deploy da aplicação em diferentes ambientes.
+
+Para usar o Docker Compose, você precisa criar um arquivo de configuração chamado "docker-compose.yml", que define as configurações de todos os containers, volumes e outros recursos da sua aplicação. Cada seção do arquivo de configuração representa um container e inclui informações como a imagem Docker a ser usada, as portas expostas, as variáveis de ambiente e os volumes de dados.
+
+Uma vez que o arquivo de configuração estiver pronto, basta executar o comando "docker-compose up" para iniciar todos os containers da aplicação. O Docker Compose também oferece comandos para parar, reiniciar e gerenciar os containers da aplicação de maneira mais fácil.
+
+O Docker Compose é uma ferramenta muito útil para desenvolvimento e teste de aplicações compostas por múltiplos containers, pois permite que você configure e gerencie facilmente todos os containers em um único lugar. Além disso, o Docker Compose é compatível com várias plataformas, incluindo Windows, Linux e macOS, o que o torna uma opção versátil para gerenciamento de aplicações Docker.
+
+# Para criar um projeto Java com Dockerfile e Docker Compose com PostgreSQL e MySQL, siga os seguintes passos:
+
+Crie um arquivo Dockerfile para a aplicação Java. Adicione as instruções para instalar o Java 17, baixar o projeto Maven e construir a aplicação. Por exemplo:
+
+```Docker
+FROM maven:3.6.3-openjdk-17 as build
+
+COPY . /app
+WORKDIR /app
+
+RUN mvn clean install
+
+FROM openjdk:17-jdk-slim
+
+COPY --from=build /app/target/*.jar /app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+```
+
+Crie um arquivo Dockerfile para cada banco de dados e adicione as instruções para instalar e iniciar os bancos de dados. Por exemplo, se você estiver usando o PostgreSQL e o MySQL, os seus arquivos Dockerfile poderiam ser algo como:
+
+Arquivo Dockerfile para PostgreSQL:
+
+```
+FROM postgres:latest
+
+ENV POSTGRES_DB nome-do-seu-banco-de-dados-postgres
+ENV POSTGRES_USER nome-do-seu-usuario
+ENV POSTGRES_PASSWORD sua-senha
+
+EXPOSE 5432
+
+```
+
+Arquivo Dockerfile para MySQL:
+
+```
+FROM mysql:latest
+
+ENV MYSQL_DATABASE nome-do-seu-banco-de-dados-mysql
+ENV MYSQL_USER nome-do-seu-usuario
+ENV MYSQL_PASSWORD sua-senha
+ENV MYSQL_ROOT_PASSWORD sua-senha-de-root
+
+EXPOSE 3306
+
+```
+
+Crie um arquivo docker-compose.yml que defina os três containers da aplicação: os dois bancos de dados e o container da aplicação Java. No arquivo de configuração, defina as dependências entre os containers e as portas expostas para cada um deles. Por exemplo:
+
+```dockerfile
+version: '3'
+services:
+  db-postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile-postgres
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+  db-mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    container_name: db-mysql
+    ports:
+      - "3306:3306"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    container_name: app
+    depends_on:
+      - db-postgres
+      - db-mysql
+    ports:
+      - "8080:8080"
+
+```
+
+Defina as dependências entre os containers. No exemplo acima, o container da aplicação depende dos dois bancos de dados, o que significa que eles devem ser iniciados primeiro.
+
+Defina as portas expostas para cada um dos containers. No exemplo acima, a porta 8080 do container da aplicação Java é exposta para a porta 8080 da máquina host. Isso significa que a aplicação poderá ser acessada pelo navegador na URL "localhost:8080".
+
+Salve o arquivo docker-compose.yml.
+
+
+
+Certifique-se de que as dependências do Spring Boot estejam configuradas no arquivo `pom.xml` do seu projeto:
+
+```java
+<dependencies>
+  ...
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+  <dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+  ...
+</dependencies>
+
+```
+
+
+
+Para criar uma imagem Docker de um projeto que já possui um Dockerfile e um Docker Compose, siga os seguintes passos:
+
+- Acesse a pasta do projeto pelo terminal.
+
+- Execute o comando "docker-compose build" para construir as imagens dos containers da aplicação. O comando irá ler as instruções dos arquivos Dockerfile e criar as imagens correspondentes.
+
+- Verifique se as imagens foram criadas com o comando "docker images". Devem aparecer na lista as imagens dos containers da aplicação, incluindo a imagem da aplicação Java, do PostgreSQL e do MySQL.
+
+- Se desejar, você pode dar um nome e uma tag à imagem da aplicação Java com o comando "docker tag [nome-da-imagem] [nome-do-repositorio]:[tag]". Por exemplo:
+
+- ```
+  docker tag app meu-repositorio/app:1.0
+  ```
+
+- Se quiser enviar a imagem para o Docker Hub ou outro repositório de imagens, execute o comando "docker push [nome-do-repositorio]:[tag]". Por exemplo:
+
+- ```
+  docker push meu-repositorio/app:1.0
+  ```
+
+  Agora, a imagem da aplicação Java está disponível no Docker Hub ou no repositório de imagens que você escolheu. Você pode usá-la para criar containers da aplicação em qualquer máquina com o Docker instalado.
+
+  
 
 Observação: você deve substituir [nome-do-seu-projeto], [nome-do-seu-banco], [nome-do-usuario] e [senha-do-usuario] pelos valores adequados para o seu projeto. Além disso, é importante garantir que o arquivo `application.properties` ou `application.yml` do seu projeto tenha as configurações de banco de dados corretas para se conectar ao PostgreSQL e ao MySQL.
 
@@ -192,3 +320,6 @@ O arquivo Dockerfile é usado para construir uma imagem Docker a partir de um pr
 Já o arquivo docker-compose.yml é usado para definir e executar aplicações multi-container usando o Docker Compose. Ele contém as configurações dos containers que serão executados, incluindo as imagens Docker que serão usadas, as variáveis de ambiente e os volumes de dados compartilhados entre os containers.
 
 Portanto, é possível que você precise de ambos os arquivos, dependendo da estrutura e das necessidades do seu projeto. O arquivo Dockerfile é usado para construir a imagem Docker do seu projeto, enquanto o arquivo docker-compose.yml é usado para gerenciar e executar os containers da sua aplicação.
+
+
+

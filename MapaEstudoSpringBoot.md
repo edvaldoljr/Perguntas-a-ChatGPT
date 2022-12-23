@@ -51,3 +51,6 @@ A seguir, apresento um mapa de estudo para o Java básico:
 3. Segurança avançada: configuração de autenticação e autorização de usuários com o Spring Security avançado, uso de tokens JWT (JSON Web Token) e integração com provedores externos de autenticação.
 4. Tópicos avançados: uso avançado de cache, gerenciamento de eventos e notificações, integração com outros frameworks e plataformas, deploy em nuvem avançado.
 5. Microserviços: criação de aplicações baseadas em microserviços com o Spring Boot, uso de ferramentas como Netflix Eureka e Ribbon para gerenciamento e balanceamento de carga.
+
+
+
